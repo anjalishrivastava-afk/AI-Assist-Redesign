@@ -1,5 +1,6 @@
 import React from 'react';
 import { ArrowDown } from 'lucide-react';
+import { Box, Button, Stack } from '@exotel-npm-dev/signal-design-system';
 
 interface NewMessagesPillProps {
   onClick: () => void;
@@ -7,14 +8,13 @@ interface NewMessagesPillProps {
 
 export function NewMessagesPill({ onClick }: NewMessagesPillProps) {
   return (
-    <div className="flex justify-center py-1.5 bg-white border-t border-gray-100">
-      <button
-        onClick={onClick}
-        className="flex items-center gap-1.5 px-3 py-1 bg-purple-600 text-white text-xs font-medium rounded-full shadow-md hover:bg-purple-700 transition-colors animate-fadeIn"
-      >
-        <ArrowDown className="w-3 h-3" />
-        New messages
-      </button>
-    </div>
+    <Box sx={{ display: 'flex', justifyContent: 'center', px: 2, py: 1, borderTop: 1, borderColor: 'divider', bgcolor: 'background.paper' }}>
+      <Button variant="contained" size="small" onClick={onClick} sx={{ borderRadius: 999 }}>
+        <Stack direction="row" spacing={0.75} alignItems="center">
+          <ArrowDown size={16} />
+          New messages below
+        </Stack>
+      </Button>
+    </Box>
   );
 }

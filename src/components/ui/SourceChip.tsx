@@ -1,4 +1,5 @@
 import React from 'react';
+import { Chip } from '@exotel-npm-dev/signal-design-system';
 import { FileText, Ticket, Users, Shield } from 'lucide-react';
 import type { SuggestionSource } from '../../mocks/suggestions';
 
@@ -16,12 +17,13 @@ interface SourceChipProps {
 export function SourceChip({ source }: SourceChipProps) {
   const Icon = iconMap[source.type];
   return (
-    <span
-      className="inline-flex items-center gap-1 text-xs px-2 py-0.5 rounded-full bg-gray-100 text-gray-600 border border-gray-200"
+    <Chip
+      size="small"
+      variant="outlined"
+      icon={<Icon size={14} aria-hidden />}
+      label={source.label}
       title={`Ref: ${source.ref}`}
-    >
-      <Icon className="w-3 h-3" />
-      {source.label}
-    </span>
+      sx={{ height: 24 }}
+    />
   );
 }

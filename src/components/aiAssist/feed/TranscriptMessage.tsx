@@ -1,5 +1,7 @@
 import React from 'react';
 import { Lock } from 'lucide-react';
+import { Box, Typography } from '@exotel-npm-dev/signal-design-system';
+import { MessageCard, VoiceTranscriptCard } from '../../ds/MessageCard';
 import { SummaryBlock } from './SummaryBlock';
 import type { TranscriptTurn } from '../../../mocks/voiceTranscript';
 import type { ChatTurn } from '../../../mocks/chatTranscript';
@@ -12,11 +14,28 @@ function PiiText({ text }: { text: string }) {
         const match = part.match(/^\*{4} \[([^\]]+)\]$/);
         if (match) {
           return (
-            <span key={i} className="inline-flex items-center gap-1 bg-amber-50 border border-amber-200 text-amber-800 text-xs px-1.5 py-0.5 rounded font-mono mx-0.5 align-baseline">
-              <Lock className="w-2.5 h-2.5 text-amber-500 shrink-0" />
-              ****
-              <span className="text-amber-600 font-sans not-italic">[{match[1]}]</span>
-            </span>
+            <Box
+              key={i}
+              component="span"
+              sx={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: 0.25,
+                mx: 0.25,
+                px: 0.5,
+                py: 0.25,
+                borderRadius: 0.5,
+                border: 1,
+                borderColor: 'divider',
+                bgcolor: 'grey.100',
+                fontFamily: 'monospace',
+                fontSize: '0.75rem',
+                verticalAlign: 'baseline',
+              }}
+            >
+              <Lock size={12} />
+              **** [{match[1]}]
+            </Box>
           );
         }
         return <span key={i}>{part}</span>;
@@ -43,32 +62,25 @@ function VoiceMessage({ turn, isLatest }: VoiceMessageProps) {
 
   if (turn.speaker === 'System') {
     return (
-      <div className="px-4 py-1 my-0.5">
-        <p className="text-[10px] text-gray-400 text-center italic">{turn.text}</p>
-      </div>
+      <Box sx={{ py: 0.5, px: 1 }}>
+        <Typography variant="caption" color="text.secondary" align="center" display="block">
+          {turn.text}
+        </Typography>
+      </Box>
     );
   }
 
   const isAgent = turn.speaker === 'Agent';
 
   return (
-    <div
-      className={`flex gap-2.5 px-4 py-1.5 animate-fadeIn transition-all ${
-        isLatest && !isAgent
-          ? 'bg-purple-50/40 ring-1 ring-inset ring-purple-100 rounded-lg mx-2'
-          : ''
-      }`}
+    <VoiceTranscriptCard
+      timestamp={turn.timestamp}
+      speaker={turn.speaker}
+      isAgent={isAgent}
+      isLatestCustomer={!isAgent && isLatest}
     >
-      <span className="text-[10px] text-gray-400 font-mono mt-0.5 w-10 shrink-0 pt-[2px]">{turn.timestamp}</span>
-      <div className="flex-1 min-w-0">
-        <span className={`text-[10px] font-semibold uppercase tracking-wide mr-2 ${isAgent ? 'text-blue-600' : 'text-gray-500'}`}>
-          {turn.speaker}
-        </span>
-        <span className="text-xs text-gray-700 leading-relaxed">
-          <PiiText text={turn.text} />
-        </span>
-      </div>
-    </div>
+      <PiiText text={turn.text} />
+    </VoiceTranscriptCard>
   );
 }
 
@@ -79,25 +91,13 @@ interface ChatMessageProps {
 function ChatMessage({ turn }: ChatMessageProps) {
   const isAgent = turn.sender === 'agent';
   return (
-    <div className={`flex ${isAgent ? 'justify-end' : 'justify-start'} px-4 py-1 animate-fadeIn`}>
-      <div className={`max-w-[82%] flex flex-col ${isAgent ? 'items-end' : 'items-start'}`}>
-        {!isAgent && (
-          <span className="text-[10px] text-gray-400 mb-0.5 ml-1">Customer · {turn.timestamp}</span>
-        )}
-        <div
-          className={`px-3 py-2 rounded-2xl text-xs leading-relaxed ${
-            isAgent
-              ? 'bg-white border border-gray-200 text-gray-700 rounded-tr-sm'
-              : 'bg-gray-100 text-gray-800 rounded-tl-sm'
-          }`}
-        >
-          {turn.piiMasked ? <PiiText text={turn.text} /> : turn.text}
-        </div>
-        {isAgent && (
-          <span className="text-[10px] text-gray-400 mt-0.5 mr-1">You · {turn.timestamp}</span>
-        )}
-      </div>
-    </div>
+    <MessageCard
+      caption={isAgent ? `You · ${turn.timestamp}` : `Customer · ${turn.timestamp}`}
+      align={isAgent ? 'end' : 'start'}
+      accentStart={!isAgent}
+    >
+      {turn.piiMasked ? <PiiText text={turn.text} /> : turn.text}
+    </MessageCard>
   );
 }
 
