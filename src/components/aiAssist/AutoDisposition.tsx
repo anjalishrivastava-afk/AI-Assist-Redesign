@@ -1,6 +1,6 @@
 import React, { useState, useId } from 'react';
 import type { SelectChangeEvent } from '@mui/material/Select';
-import { ClipboardList, PhoneForwarded, CheckSquare } from 'lucide-react';
+import { ClipboardText, ArrowsLeftRight, CheckSquare } from '@phosphor-icons/react';
 import {
   Box,
   Button,
@@ -82,7 +82,7 @@ export function AutoDisposition({ mode, isActive, onSave }: AutoDispositionProps
     <CollapsibleSection
       title={
         <Stack direction="row" spacing={1} alignItems="center">
-          <ClipboardList size={16} aria-hidden />
+          <ClipboardText size={16} aria-hidden />
           <Typography component="span" variant="subtitle2">
             Disposition
           </Typography>
@@ -142,7 +142,7 @@ export function AutoDisposition({ mode, isActive, onSave }: AutoDispositionProps
               </Button>
               <Button variant="outlined" fullWidth onClick={onSave}>
                 <Stack direction="row" spacing={0.5} alignItems="center" justifyContent="center" component="span">
-                  <PhoneForwarded size={16} aria-hidden />
+                  <ArrowsLeftRight size={16} aria-hidden />
                   Dispose and dial next
                 </Stack>
               </Button>

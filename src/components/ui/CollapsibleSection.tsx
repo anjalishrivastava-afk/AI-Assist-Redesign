@@ -1,5 +1,5 @@
 import React from 'react';
-import { ChevronDown } from 'lucide-react';
+import { CaretDown } from '@phosphor-icons/react';
 import {
   Accordion,
   AccordionDetails,
@@ -43,7 +43,7 @@ export function CollapsibleSection({
       }}
     >
       <AccordionSummary
-        expandIcon={<ChevronDown size={18} aria-hidden />}
+        expandIcon={<CaretDown size={18} aria-hidden />}
         sx={{
           px: 2,
           minHeight: 48,

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Mic, MicOff, Pause, Play, PhoneForwarded, Users, PhoneOff, Phone } from 'lucide-react';
+import { Microphone, MicrophoneSlash, Pause, Play, ArrowsLeftRight, UsersThree, PhoneDisconnect, Phone } from '@phosphor-icons/react';
 import {
   Box,
   Button,
@@ -94,7 +94,7 @@ export function VoiceInteraction({
                 onClick={() => setMuted(m => !m)}
                 sx={{ py: 1.5, flexDirection: 'column', gap: 0.5 }}
               >
-                {muted ? <MicOff size={20} /> : <Mic size={20} />}
+                {muted ? <MicrophoneSlash size={20} weight="fill" /> : <Microphone size={20} />}
                 <Typography variant="caption" component="span">
                   {muted ? 'Unmute' : 'Mute'}
                 </Typography>
@@ -110,13 +110,13 @@ export function VoiceInteraction({
                 </Typography>
               </Button>
               <Button variant="outlined" disabled sx={{ py: 1.5, flexDirection: 'column', gap: 0.5 }} title="Unavailable in preview">
-                <PhoneForwarded size={20} />
+                <ArrowsLeftRight size={20} />
                 <Typography variant="caption" component="span">
                   Transfer
                 </Typography>
               </Button>
               <Button variant="outlined" disabled sx={{ py: 1.5, flexDirection: 'column', gap: 0.5 }} title="Unavailable in preview">
-                <Users size={20} />
+                <UsersThree size={20} />
                 <Typography variant="caption" component="span">
                   Conference
                 </Typography>
@@ -141,7 +141,7 @@ export function VoiceInteraction({
           </>
         ) : (
           <>
-            <Button variant="contained" color="error" size="large" fullWidth onClick={onEndCall} startIcon={<PhoneOff size={20} />}>
+            <Button variant="contained" color="error" size="large" fullWidth onClick={onEndCall} startIcon={<PhoneDisconnect size={20} />}>
               End Call
             </Button>
             <Button variant="outlined" size="small" onClick={() => { /* demo */ }}>

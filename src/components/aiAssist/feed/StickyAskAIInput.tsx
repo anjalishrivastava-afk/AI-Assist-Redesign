@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Send } from 'lucide-react';
+import { PaperPlaneTilt } from '@phosphor-icons/react';
 import { Stack, Typography } from '@exotel-npm-dev/signal-design-system';
 import { StickyComposerBar } from '../../ds/StickyComposerBar';
 
@@ -25,7 +25,7 @@ export function StickyAskAIInput({ onSubmit }: StickyAskAIInputProps) {
       placeholder="Ask a question…"
       ariaLabel="Ask AI — not visible to customer"
       submitLabel="Send"
-      submitStartIcon={<Send size={16} aria-hidden />}
+      submitStartIcon={<PaperPlaneTilt size={16} aria-hidden />}
       disabledSubmit={!value.trim()}
       header={
         <Stack direction="row" justifyContent="space-between" alignItems="center">

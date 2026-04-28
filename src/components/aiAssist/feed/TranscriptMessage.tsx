@@ -1,5 +1,5 @@
 import React from 'react';
-import { Lock } from 'lucide-react';
+import { Lock } from '@phosphor-icons/react';
 import { Box, Typography } from '@exotel-npm-dev/signal-design-system';
 import { MessageCard, VoiceTranscriptCard } from '../../ds/MessageCard';
 import { SummaryBlock } from './SummaryBlock';

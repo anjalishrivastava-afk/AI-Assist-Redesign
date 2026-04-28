@@ -1,8 +1,8 @@
 import React, { useState, useRef } from 'react';
 import {
-  Copy, Volume2, CheckCircle, Edit3, ThumbsUp, ThumbsDown,
-  AlertTriangle, ChevronDown, ChevronUp,
-} from 'lucide-react';
+  Copy, SpeakerHigh, CheckCircle, PencilSimpleLine, ThumbsUp, ThumbsDown,
+  Warning, CaretDown, CaretUp,
+} from '@phosphor-icons/react';
 import {
   Box,
   Button,
@@ -101,7 +101,7 @@ export function SuggestionCard({ suggestion, mode, onInsert }: SuggestionCardPro
     >
       {suggestion.confidence === 'Low' && (
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, px: 2, py: 1.5, borderBottom: 1, borderColor: 'divider', bgcolor: 'warning.light', opacity: 0.95 }}>
-          <AlertTriangle size={16} />
+          <Warning size={16} />
           <Typography variant="caption" fontWeight={600} color="warning.main">
             Low confidence — verify before sending
           </Typography>
@@ -121,11 +121,11 @@ export function SuggestionCard({ suggestion, mode, onInsert }: SuggestionCardPro
           <Button size="small" onClick={() => setTextExpanded(e => !e)} sx={{ mt: 1, p: 0, minWidth: 0, textTransform: 'none' }}>
             {textExpanded ? (
               <Stack direction="row" spacing={0.25} alignItems="center" component="span">
-                <ChevronUp size={14} /> Show less
+                <CaretUp size={14} /> Show less
               </Stack>
             ) : (
               <Stack direction="row" spacing={0.25} alignItems="center" component="span">
-                <ChevronDown size={14} /> Show more
+                <CaretDown size={14} /> Show more
               </Stack>
             )}
           </Button>
@@ -136,26 +136,26 @@ export function SuggestionCard({ suggestion, mode, onInsert }: SuggestionCardPro
             <>
               <Button variant="contained" size="small" onClick={handleInsert}>
                 <Stack direction="row" spacing={0.5} alignItems="center" component="span">
-                  <CheckCircle size={14} /> Use reply
+                  <CheckCircle size={14} aria-hidden /> Use reply
                 </Stack>
               </Button>
               <Button variant="outlined" size="small" onClick={handleEditInsert}>
                 <Stack direction="row" spacing={0.5} alignItems="center" component="span">
-                  <Edit3 size={14} /> Edit & use
+                  <PencilSimpleLine size={14} aria-hidden /> Edit & use
                 </Stack>
               </Button>
             </>
           )}
           <Button variant="outlined" size="small" onClick={handleCopy}>
             <Stack direction="row" spacing={0.5} alignItems="center" component="span" sx={{ color: copied ? 'success.main' : 'text.primary' }}>
-              {copied ? <CheckCircle size={14} aria-hidden /> : <Copy size={14} aria-hidden />}
+              {copied ? <CheckCircle size={14} aria-hidden weight="fill" /> : <Copy size={14} aria-hidden />}
               {copied ? 'Copied' : 'Copy'}
             </Stack>
           </Button>
           {mode === 'voice' && (
             <Button variant="outlined" size="small" type="button">
               <Stack direction="row" spacing={0.5} alignItems="center" component="span">
-                <Volume2 size={14} /> Read aloud
+                <SpeakerHigh size={14} aria-hidden /> Read aloud
               </Stack>
             </Button>
           )}
@@ -164,7 +164,7 @@ export function SuggestionCard({ suggestion, mode, onInsert }: SuggestionCardPro
 
           {confirmVisible && (
             <Typography variant="caption" color="success.main" fontWeight={600} sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
-              <CheckCircle size={14} /> Feedback sent
+              <CheckCircle size={14} weight="fill" /> Feedback sent
             </Typography>
           )}
 

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ChevronDown, ChevronUp } from 'lucide-react';
+import { CaretDown, CaretUp } from '@phosphor-icons/react';
 import {
   Box,
   Button,
@@ -46,7 +46,7 @@ export function SuggestionGroup({ suggestionIds, mode, onInsert }: SuggestionGro
           <Typography variant="caption" fontWeight={600} color="text.secondary">
             Suggested replies ({validSuggestions.length})
           </Typography>
-          {collapsed ? <ChevronDown size={16} /> : <ChevronUp size={16} />}
+          {collapsed ? <CaretDown size={16} /> : <CaretUp size={16} />}
         </Button>
 
         {!collapsed && (

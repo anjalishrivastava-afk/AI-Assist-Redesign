@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Send, Paperclip, Smile } from 'lucide-react';
+import { PaperPlaneTilt, Paperclip, Smiley } from '@phosphor-icons/react';
 import { IconButton } from '@exotel-npm-dev/signal-design-system';
 import { StickyComposerBar } from '../ds/StickyComposerBar';
 
@@ -40,15 +40,15 @@ export function Composer({ insertText, onClearInsert }: ComposerProps) {
       accessoryIcons={
         <>
           <IconButton size="small" aria-label="Attach file" color="default">
-            <Paperclip size={18} />
+            <Paperclip size={18} aria-hidden />
           </IconButton>
           <IconButton size="small" aria-label="Emoji" color="default">
-            <Smile size={18} />
+            <Smiley size={18} aria-hidden />
           </IconButton>
         </>
       }
       submitLabel="Send"
-      submitStartIcon={<Send size={18} aria-hidden />}
+      submitStartIcon={<PaperPlaneTilt size={18} aria-hidden />}
       onKeyDown={e => {
         if (e.key === 'Enter' && e.metaKey) handleSend();
       }}

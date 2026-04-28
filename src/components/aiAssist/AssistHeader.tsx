@@ -1,5 +1,5 @@
 import React from 'react';
-import { Info, Phone, MessageSquare, CheckCircle } from 'lucide-react';
+import { Info, Phone, ChatText, CheckCircle } from '@phosphor-icons/react';
 import {
   Box,
   Chip,
@@ -56,11 +56,11 @@ export function AssistHeader({ mode, callDuration, sentiment, interactionState }
 
   const statusChip =
     interactionState === 'ended' ? (
-      <Chip size="small" variant="outlined" icon={<CheckCircle size={14} aria-hidden />} label={`${mode === 'voice' ? 'Call ended' : 'Resolved'} · ${callDuration}`} />
+      <Chip size="small" variant="outlined" icon={<CheckCircle size={14} aria-hidden weight="fill" />} label={`${mode === 'voice' ? 'Call ended' : 'Resolved'} · ${callDuration}`} />
     ) : mode === 'voice' ? (
       <Chip size="small" variant="outlined" icon={<Phone size={14} aria-hidden />} label={`Live · ${callDuration}`} />
     ) : (
-      <Chip size="small" variant="outlined" icon={<MessageSquare size={14} aria-hidden />} label="Active chat" />
+      <Chip size="small" variant="outlined" icon={<ChatText size={14} aria-hidden />} label="Active chat" />
     );
 
   return (

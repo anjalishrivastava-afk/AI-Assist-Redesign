@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { MessageSquare, ChevronDown, ChevronUp, Lock } from 'lucide-react';
+import { ChatText, CaretDown, CaretUp, Lock } from '@phosphor-icons/react';
 import {
   Box,
   Button,
@@ -83,7 +83,7 @@ export function ConversationSummary({ mode, voiceTurns, chatTurns, sentiment, su
 
           <Stack direction="row" flexWrap="wrap" alignItems="center" columnGap={1.5} rowGap={0.5} sx={{ mb: 1.5 }}>
             <Stack direction="row" alignItems="center" spacing={0.75}>
-              <MessageSquare size={14} aria-hidden />
+              <ChatText size={14} aria-hidden />
               <Typography variant="caption" color="text.secondary">
                 {msgCount} messages
               </Typography>
@@ -108,7 +108,7 @@ export function ConversationSummary({ mode, voiceTurns, chatTurns, sentiment, su
 
           <Button fullWidth variant="outlined" size="small" onClick={() => setExpanded(e => !e)} sx={{ mt: 2, textTransform: 'none' }}>
             <Stack direction="row" spacing={0.5} alignItems="center" component="span">
-              {expanded ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
+              {expanded ? <CaretUp size={16} /> : <CaretDown size={16} />}
               {expanded ? 'Hide transcript' : 'Show full transcript'}
             </Stack>
           </Button>
@@ -179,7 +179,7 @@ export function ConversationSummary({ mode, voiceTurns, chatTurns, sentiment, su
               <Divider />
               <Button fullWidth size="small" onClick={() => setExpanded(false)} sx={{ textTransform: 'none', borderRadius: 0 }}>
                 <Stack direction="row" spacing={0.5} alignItems="center" component="span">
-                  <ChevronUp size={14} />
+                  <CaretUp size={14} />
                   Collapse
                 </Stack>
               </Button>

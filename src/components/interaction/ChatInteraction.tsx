@@ -1,5 +1,5 @@
 import React from 'react';
-import { MessageSquare, Mail, Globe, CheckCircle } from 'lucide-react';
+import { ChatText, Envelope, Globe, CheckCircle } from '@phosphor-icons/react';
 import {
   Box,
   Button,
@@ -14,8 +14,8 @@ import type { ChatChannel } from '../../mocks/chatTranscript';
 import type { InteractionState } from '../../hooks/useInteractionState';
 
 const channelIcon = {
-  WhatsApp: MessageSquare,
-  Email: Mail,
+  WhatsApp: ChatText,
+  Email: Envelope,
   Web: Globe,
 };
 
@@ -116,7 +116,7 @@ export function ChatInteraction({
           ) : (
             <Button variant="contained" color="success" size="small" onClick={onResolve}>
               <Box component="span" sx={{ display: 'inline-flex', alignItems: 'center', gap: 0.5 }}>
-                <CheckCircle size={16} />
+                <CheckCircle size={16} weight="fill" />
                 Resolve
               </Box>
             </Button>

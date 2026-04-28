@@ -1,5 +1,5 @@
 import React from 'react';
-import { ArrowDown } from 'lucide-react';
+import { ArrowDown } from '@phosphor-icons/react';
 import { Box, Button, Stack } from '@exotel-npm-dev/signal-design-system';
 
 interface NewMessagesPillProps {

@@ -1,6 +1,6 @@
 import React from 'react';
 import { Chip } from '@exotel-npm-dev/signal-design-system';
-import { FileText, Ticket, Users, Shield } from 'lucide-react';
+import { FileText, Ticket, Users, Shield } from '@phosphor-icons/react';
 import type { SuggestionSource } from '../../mocks/suggestions';
 
 const iconMap = {

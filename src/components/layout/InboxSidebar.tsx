@@ -1,5 +1,5 @@
 import React from 'react';
-import { Phone, MessageSquare, Mail, Globe, Clock } from 'lucide-react';
+import { Phone, ChatText, Envelope, Globe, Clock } from '@phosphor-icons/react';
 import {
   Avatar,
   Badge,
@@ -15,8 +15,8 @@ import { inboxItems } from '../../mocks/inbox';
 import type { InboxItem } from '../../mocks/inbox';
 
 const channelIcon = {
-  WhatsApp: MessageSquare,
-  Email: Mail,
+  WhatsApp: ChatText,
+  Email: Envelope,
   Web: Globe,
 };
 
@@ -160,7 +160,7 @@ export function InboxSidebar() {
         ))}
 
         <Box sx={{ mt: 1 }}>
-          <SectionHeader icon={MessageSquare} label="Chats" count={chat.length} />
+          <SectionHeader icon={ChatText} label="Chats" count={chat.length} />
         </Box>
         {chat.map(item => (
           <InboxRow key={item.id} item={item} active={false} />
