@@ -1,5 +1,4 @@
 import React, { useState, useMemo } from 'react';
-import { Box, Stack } from '@exotel-npm-dev/signal-design-system';
 import { TranscriptMessage } from './feed/TranscriptMessage';
 import { SuggestionGroup } from './feed/SuggestionGroup';
 import { AskAIBlock } from './feed/AskAIBlock';
@@ -30,7 +29,7 @@ function getMockResponse(question: string): { text: string; source: string } {
   }
   return {
     text: "I don't have specific data for that query. Please check the CRM or contact your team lead.",
-    source: 'AI Assist',
+    source: 'AI Assist (no source matched)',
   };
 }
 
@@ -38,7 +37,7 @@ function buildFeed(
   turns: (TranscriptTurn | ChatTurn)[],
   mode: Mode,
   dynamicQAs: AskAIEntry[],
-  _latestId: string | undefined,
+  latestId: string | undefined,
 ): FeedItem[] {
   const items: FeedItem[] = [];
   const preseeded = [
@@ -65,6 +64,7 @@ function buildFeed(
       items.push({ kind: 'chat-turn', id: turn.id, turn: turn as ChatTurn });
     }
 
+    // Inject pre-seeded Q&A exchanges at natural breakpoints
     if (i === 2 && turns.length > 2) {
       items.push({ kind: 'ask-ai', id: preseeded[0].id, question: preseeded[0].question, answer: preseeded[0].answer, source: preseeded[0].source, loading: false });
     }
@@ -72,6 +72,7 @@ function buildFeed(
       items.push({ kind: 'ask-ai', id: preseeded[1].id, question: preseeded[1].question, answer: preseeded[1].answer, source: preseeded[1].source, loading: false });
     }
 
+    // Add inline suggestion group for customer messages with suggestions
     const isCustomer = mode === 'voice'
       ? (turn as TranscriptTurn).speaker === 'Customer'
       : (turn as ChatTurn).sender === 'customer';
@@ -82,6 +83,7 @@ function buildFeed(
     }
   }
 
+  // Append dynamic Ask AI exchanges at the end
   for (const qa of dynamicQAs) {
     items.push({ kind: 'ask-ai', id: qa.id, question: qa.question, answer: qa.answer, source: qa.source, loading: qa.loading });
   }
@@ -89,43 +91,25 @@ function buildFeed(
   return items;
 }
 
-export type LiveFeedFilter = 'full' | 'transcript';
-
 interface LiveWorkspaceProps {
   mode: Mode;
   voiceTurns: TranscriptTurn[];
   latestVoiceId?: string;
   onInsert?: (text: string) => void;
-  /** `transcript` hides inline suggestions and Ask AI blocks */
-  feedFilter?: LiveFeedFilter;
-  hideAskAI?: boolean;
 }
 
-export function LiveWorkspace({
-  mode,
-  voiceTurns,
-  latestVoiceId,
-  onInsert,
-  feedFilter = 'full',
-  hideAskAI = false,
-}: LiveWorkspaceProps) {
+export function LiveWorkspace({ mode, voiceTurns, latestVoiceId, onInsert }: LiveWorkspaceProps) {
   const [dynamicQAs, setDynamicQAs] = useState<AskAIEntry[]>([]);
 
   const turns: (TranscriptTurn | ChatTurn)[] = mode === 'voice' ? voiceTurns : chatTranscript;
 
   const feed = useMemo(
     () => buildFeed(turns, mode, dynamicQAs, latestVoiceId),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [turns.length, mode, dynamicQAs],
   );
 
-  const visibleFeed = useMemo(() => {
-    if (feedFilter === 'transcript') {
-      return feed.filter(i => i.kind === 'voice-turn' || i.kind === 'chat-turn');
-    }
-    return feed;
-  }, [feed, feedFilter]);
-
-  const { containerRef, bottomRef, hasScrolledUp, scrollToBottom, handleScroll } = useAutoScroll(visibleFeed.length);
+  const { containerRef, bottomRef, hasScrolledUp, scrollToBottom, handleScroll } = useAutoScroll(feed.length);
 
   const handleAskAI = (question: string) => {
     const id = `dq-${Date.now()}`;
@@ -140,13 +124,14 @@ export function LiveWorkspace({
   };
 
   return (
-    <Stack sx={{ flex: 1, minHeight: 0, bgcolor: 'grey.100' }}>
-      <Box
+    <div className="flex-1 flex flex-col min-h-0">
+      {/* Scrollable feed */}
+      <div
         ref={containerRef}
         onScroll={handleScroll}
-        sx={{ flex: 1, overflowY: 'auto', px: 2, py: 2, display: 'flex', flexDirection: 'column', gap: 1 }}
+        className="flex-1 overflow-y-auto py-2"
       >
-        {visibleFeed.map(item => {
+        {feed.map(item => {
           if (item.kind === 'voice-turn') {
             return (
               <TranscriptMessage
@@ -183,12 +168,12 @@ export function LiveWorkspace({
           }
           return null;
         })}
-        <Box ref={bottomRef} sx={{ height: 8, flexShrink: 0 }} />
-      </Box>
+        <div ref={bottomRef} className="h-2" />
+      </div>
 
       {hasScrolledUp && <NewMessagesPill onClick={scrollToBottom} />}
 
-      {!hideAskAI && <StickyAskAIInput onSubmit={handleAskAI} />}
-    </Stack>
+      <StickyAskAIInput onSubmit={handleAskAI} />
+    </div>
   );
 }

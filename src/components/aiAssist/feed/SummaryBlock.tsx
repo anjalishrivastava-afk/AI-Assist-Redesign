@@ -1,5 +1,5 @@
 import React from 'react';
-import { Card, CardContent, Typography, Stack } from '@exotel-npm-dev/signal-design-system';
+import { Sparkles } from 'lucide-react';
 
 interface SummaryBlockProps {
   text: string;
@@ -9,20 +9,15 @@ interface SummaryBlockProps {
 
 export function SummaryBlock({ text, summarizedCount, timestamp }: SummaryBlockProps) {
   return (
-    <Card variant="outlined" sx={{ borderLeft: 3, borderLeftColor: 'primary.main', bgcolor: 'action.hover' }}>
-      <CardContent sx={{ py: 1.5, '&:last-child': { pb: 1.5 } }}>
-        <Stack direction="row" justifyContent="space-between" alignItems="baseline" spacing={1} sx={{ mb: 1 }}>
-          <Typography variant="caption" fontWeight={600} color="text.secondary">
-            Summary · {summarizedCount} messages
-          </Typography>
-          <Typography variant="caption" color="text.secondary" sx={{ fontFamily: 'monospace', fontVariantNumeric: 'tabular-nums' }}>
-            {timestamp}
-          </Typography>
-        </Stack>
-        <Typography variant="body2" color="text.primary" sx={{ lineHeight: 1.5 }}>
-          {text}
-        </Typography>
-      </CardContent>
-    </Card>
+    <div className="mx-3 my-2 rounded-lg bg-purple-50 border border-purple-200 border-l-2 border-l-purple-500 px-3 py-2.5 animate-fadeIn">
+      <div className="flex items-center gap-1.5 mb-1.5">
+        <Sparkles className="w-3 h-3 text-purple-500 shrink-0" />
+        <span className="text-[10px] font-semibold text-purple-600 uppercase tracking-wide">
+          AI summary of {summarizedCount} messages
+        </span>
+        <span className="ml-auto text-[10px] text-gray-400 font-mono">{timestamp}</span>
+      </div>
+      <p className="text-xs text-purple-800 leading-relaxed">{text}</p>
+    </div>
   );
 }

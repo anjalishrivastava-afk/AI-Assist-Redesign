@@ -1,5 +1,4 @@
 import React from 'react';
-import { Stack, ToggleButton, ToggleButtonGroup, Typography } from '@exotel-npm-dev/signal-design-system';
 import type { Mode } from '../../hooks/useMode';
 
 interface ModeToggleProps {
@@ -9,24 +8,30 @@ interface ModeToggleProps {
 
 export function ModeToggle({ mode, onChange }: ModeToggleProps) {
   return (
-    <Stack direction="row" alignItems="center" spacing={1.5}>
-      <Typography variant="caption" color="text.secondary" sx={{ display: { xs: 'none', sm: 'inline' } }}>
-        Sample
-      </Typography>
-      <ToggleButtonGroup
-        exclusive
-        size="small"
-        value={mode}
-        onChange={(_, v: Mode | null) => v && onChange(v)}
-        aria-label="Interaction type"
-      >
-        <ToggleButton value="voice" sx={{ px: 1.5, py: 0.5, textTransform: 'none', typography: 'caption', fontWeight: 600 }}>
-          Voice
-        </ToggleButton>
-        <ToggleButton value="chat" sx={{ px: 1.5, py: 0.5, textTransform: 'none', typography: 'caption', fontWeight: 600 }}>
-          Chat
-        </ToggleButton>
-      </ToggleButtonGroup>
-    </Stack>
+    <div className="flex items-center gap-2">
+      <span className="text-[10px] text-gray-400 font-medium uppercase tracking-widest">Demo mode</span>
+      <div className="flex items-center bg-gray-100 rounded-full p-0.5 gap-0">
+        <button
+          onClick={() => onChange('voice')}
+          className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold transition-all ${
+            mode === 'voice'
+              ? 'bg-white text-red-600 shadow-sm border border-gray-200'
+              : 'text-gray-500 hover:text-gray-700'
+          }`}
+        >
+          🎙 Voice
+        </button>
+        <button
+          onClick={() => onChange('chat')}
+          className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold transition-all ${
+            mode === 'chat'
+              ? 'bg-white text-green-600 shadow-sm border border-gray-200'
+              : 'text-gray-500 hover:text-gray-700'
+          }`}
+        >
+          💬 Chat
+        </button>
+      </div>
+    </div>
   );
 }

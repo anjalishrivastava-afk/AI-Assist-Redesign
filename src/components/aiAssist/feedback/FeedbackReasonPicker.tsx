@@ -1,19 +1,12 @@
 import React, { useState } from 'react';
-import { X } from '@phosphor-icons/react';
-import {
-  Box,
-  Button,
-  Stack,
-  TextField,
-  Typography,
-} from '@exotel-npm-dev/signal-design-system';
+import { X } from 'lucide-react';
 import type { FeedbackReason } from '../../../hooks/useFeedback';
 
 const REASONS: Array<{ id: FeedbackReason; label: string; description: string }> = [
   { id: 'inaccurate', label: 'Inaccurate', description: 'Wrong information or facts' },
-  { id: 'off-topic', label: 'Off-topic', description: "Doesn't match the customer's request" },
-  { id: 'language-mismatch', label: 'Language mismatch', description: 'Wrong language or tone' },
-  { id: 'other', label: 'Other', description: 'Specify below' },
+  { id: 'off-topic', label: 'Off-topic', description: "Doesn't fit what the customer is asking" },
+  { id: 'language-mismatch', label: 'Language mismatch', description: 'Wrong language or tone for this customer' },
+  { id: 'other', label: 'Other', description: 'Something else (please specify)' },
 ];
 
 interface FeedbackReasonPickerProps {
@@ -38,6 +31,7 @@ export function FeedbackReasonPicker({
       setSelected('other');
       return;
     }
+    // Immediate submit for non-Other reasons
     onSubmit(id);
   };
 
@@ -48,69 +42,69 @@ export function FeedbackReasonPicker({
   };
 
   return (
-    <Box sx={{ borderTop: 1, borderColor: 'divider', bgcolor: 'grey.50' }}>
-      <Stack direction="row" justifyContent="space-between" alignItems="center" sx={{ px: 2, pt: 1.5, pb: 1 }}>
-        <Typography variant="caption" fontWeight={600} color="text.secondary">
-          Why wasn&apos;t this helpful?
-        </Typography>
-        <Button size="small" onClick={onCancel} sx={{ minWidth: 0, textTransform: 'none' }} color="inherit">
-          <Stack direction="row" spacing={0.5} alignItems="center" component="span">
-            <X size={14} /> Cancel
-          </Stack>
-        </Button>
-      </Stack>
+    <div className="bg-red-50 border-t border-red-100 rounded-b-lg">
+      <div className="px-3 pt-2.5 pb-1 flex items-center justify-between">
+        <span className="text-xs font-semibold text-red-700">Why wasn't this helpful?</span>
+        <button
+          onClick={onCancel}
+          className="text-[10px] text-gray-400 hover:text-gray-600 flex items-center gap-0.5 transition-colors"
+          title="Close without saving"
+        >
+          <X className="w-3 h-3" />
+          Cancel
+        </button>
+      </div>
 
-      <Stack spacing={1} sx={{ px: 2, pb: 2 }}>
+      <div className="px-3 pb-3 space-y-1.5">
         {REASONS.map(reason => {
           const isSelected = selected === reason.id;
           return (
-            <Button
+            <button
               key={reason.id}
-              fullWidth
-              variant={isSelected ? 'contained' : 'outlined'}
               onClick={() => handleChipClick(reason.id)}
-              sx={{ alignItems: 'stretch', textAlign: 'left', py: 1.25, textTransform: 'none' }}
+              className={`w-full text-left px-3 py-2 rounded-lg border transition-colors ${
+                isSelected
+                  ? 'bg-red-600 border-red-600 text-white'
+                  : 'bg-white border-gray-200 text-gray-700 hover:border-red-300 hover:bg-red-50'
+              }`}
             >
-              <Box sx={{ width: '100%' }}>
-                <Typography variant="caption" fontWeight={600} display="block">
-                  {reason.label}
-                </Typography>
-                <Typography variant="caption" color={isSelected ? 'inherit' : 'text.secondary'} sx={{ opacity: isSelected ? 0.9 : 1, display: 'block', mt: 0.25 }}>
-                  {reason.description}
-                </Typography>
-              </Box>
-            </Button>
+              <div className="text-xs font-semibold leading-tight">{reason.label}</div>
+              <div className={`text-[10px] mt-0.5 leading-tight ${isSelected ? 'text-red-100' : 'text-gray-400'}`}>
+                {reason.description}
+              </div>
+            </button>
           );
         })}
 
-        <Box
-          sx={{
-            maxHeight: selected === 'other' ? 200 : 0,
+        {/* "Other" textarea — smooth height reveal */}
+        <div
+          style={{
+            maxHeight: selected === 'other' ? '200px' : '0',
             overflow: 'hidden',
             transition: 'max-height 0.2s ease-out',
           }}
         >
-          <Stack spacing={1.5} sx={{ pt: 1 }}>
-            <TextField
-              fullWidth
-              multiline
-              minRows={3}
+          <div className="pt-1 space-y-2">
+            <textarea
               value={comment}
               onChange={e => setComment(e.target.value.slice(0, MAX_COMMENT))}
-              placeholder="Add details (required)"
-              size="small"
+              placeholder="Please tell us more (required)"
+              rows={3}
+              className="w-full px-3 py-2 text-xs border border-red-200 rounded-lg bg-white resize-none focus:outline-none focus:ring-1 focus:ring-red-300 placeholder:text-gray-400"
             />
-            <Stack direction="row" justifyContent="space-between" alignItems="center">
-              <Typography variant="caption" color="text.secondary">
-                {comment.length}/{MAX_COMMENT}
-              </Typography>
-              <Button variant="contained" size="small" onClick={handleOtherSubmit} disabled={!comment.trim()}>
+            <div className="flex items-center justify-between">
+              <span className="text-[10px] text-gray-400">{comment.length}/{MAX_COMMENT}</span>
+              <button
+                onClick={handleOtherSubmit}
+                disabled={!comment.trim()}
+                className="px-3 py-1.5 text-xs font-semibold bg-purple-600 hover:bg-purple-700 disabled:opacity-40 disabled:cursor-not-allowed text-white rounded-lg transition-colors"
+              >
                 Submit
-              </Button>
-            </Stack>
-          </Stack>
-        </Box>
-      </Stack>
-    </Box>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
   );
 }

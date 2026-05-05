@@ -1,6 +1,5 @@
 import React from 'react';
-import { Chip } from '@exotel-npm-dev/signal-design-system';
-import { FileText, Ticket, Users, Shield } from '@phosphor-icons/react';
+import { FileText, Ticket, Users, Shield } from 'lucide-react';
 import type { SuggestionSource } from '../../mocks/suggestions';
 
 const iconMap = {
@@ -17,13 +16,12 @@ interface SourceChipProps {
 export function SourceChip({ source }: SourceChipProps) {
   const Icon = iconMap[source.type];
   return (
-    <Chip
-      size="small"
-      variant="outlined"
-      icon={<Icon size={14} aria-hidden />}
-      label={source.label}
+    <span
+      className="inline-flex items-center gap-1 text-xs px-2 py-0.5 rounded-full bg-gray-100 text-gray-600 border border-gray-200"
       title={`Ref: ${source.ref}`}
-      sx={{ height: 24 }}
-    />
+    >
+      <Icon className="w-3 h-3" />
+      {source.label}
+    </span>
   );
 }

@@ -1,5 +1,4 @@
 import React from 'react';
-import { Box, Stack } from '@exotel-npm-dev/signal-design-system';
 import { ConversationSummary } from './wrapup/ConversationSummary';
 import { AutoDisposition } from './AutoDisposition';
 import { voiceTranscript } from '../../mocks/voiceTranscript';
@@ -19,7 +18,7 @@ export function WrapUpView({ mode, callDuration, onSaveDisposition }: WrapUpView
   const data = mode === 'voice' ? dispositionData : chatDispositionData;
 
   return (
-    <Stack sx={{ flex: 1, minHeight: 0, overflow: 'auto', bgcolor: 'grey.100' }}>
+    <div className="flex-1 overflow-y-auto">
       <ConversationSummary
         mode={mode}
         voiceTurns={voiceTranscript}
@@ -28,9 +27,9 @@ export function WrapUpView({ mode, callDuration, onSaveDisposition }: WrapUpView
         summary={data.mockCallSummary}
         callDuration={callDuration}
       />
-      <Box sx={{ borderTop: 1, borderColor: 'divider', bgcolor: 'background.paper' }}>
+      <div className="border-t border-gray-100">
         <AutoDisposition mode={mode} isActive={false} onSave={onSaveDisposition} />
-      </Box>
-    </Stack>
+      </div>
+    </div>
   );
 }

@@ -1,20 +1,7 @@
-import React, { useState, useId } from 'react';
-import type { SelectChangeEvent } from '@mui/material/Select';
-import { ClipboardText, ArrowsLeftRight, CheckSquare } from '@phosphor-icons/react';
-import {
-  Box,
-  Button,
-  FormControl,
-  FormHelperText,
-  InputLabel,
-  ListItemText,
-  MenuItem,
-  Select,
-  Stack,
-  TextField,
-  Typography,
-} from '@exotel-npm-dev/signal-design-system';
+import React, { useState } from 'react';
+import { ClipboardList, ChevronDown, Sparkles, PhoneForwarded, CheckSquare } from 'lucide-react';
 import { CollapsibleSection } from '../ui/CollapsibleSection';
+import { Button } from '../ui/Button';
 import { dispositionData, chatDispositionData } from '../../mocks/disposition';
 import type { Mode } from '../../hooks/useMode';
 
@@ -24,7 +11,7 @@ interface AutoDispositionProps {
   onSave: () => void;
 }
 
-function ReasonSelect({
+function AIReasoningDropdown({
   label,
   value,
   options,
@@ -37,26 +24,51 @@ function ReasonSelect({
   onChange: (v: string) => void;
   confidenceText: string;
 }) {
-  const id = useId();
-  const labelId = `${id}-label`;
+  const [open, setOpen] = useState(false);
+  const selectedOption = options.find(o => o.value === value);
 
   return (
-    <FormControl fullWidth size="small" margin="dense">
-      <InputLabel id={labelId}>{label}</InputLabel>
-      <Select
-        labelId={labelId}
-        label={label}
-        value={value}
-        onChange={(e: SelectChangeEvent<string>) => onChange(e.target.value)}
-      >
-        {options.map(opt => (
-          <MenuItem key={opt.value} value={opt.value}>
-            <ListItemText primary={opt.label} secondary={opt.aiReasoning} primaryTypographyProps={{ variant: 'body2' }} secondaryTypographyProps={{ variant: 'caption' }} />
-          </MenuItem>
-        ))}
-      </Select>
-      <FormHelperText>{confidenceText}</FormHelperText>
-    </FormControl>
+    <div className="space-y-1">
+      <label className="text-xs font-medium text-gray-600">{label}</label>
+      <div className="relative">
+        <button
+          onClick={() => setOpen(o => !o)}
+          className="w-full flex items-center justify-between px-3 py-2 text-sm bg-white border border-gray-200 rounded-lg hover:border-gray-300 transition-colors"
+        >
+          <div className="flex items-center gap-2">
+            <span>{selectedOption?.label ?? value}</span>
+            <span className="text-xs px-1.5 py-0.5 rounded-full bg-purple-50 text-purple-600 font-medium border border-purple-100">
+              {confidenceText}
+            </span>
+          </div>
+          <ChevronDown className={`w-4 h-4 text-gray-400 transition-transform ${open ? 'rotate-180' : ''}`} />
+        </button>
+
+        {open && (
+          <div className="absolute top-full left-0 right-0 mt-1 bg-white border border-gray-200 rounded-lg shadow-lg z-20 overflow-hidden">
+            {options.map(opt => (
+              <button
+                key={opt.value}
+                onClick={() => { onChange(opt.value); setOpen(false); }}
+                className={`w-full text-left px-3 py-2.5 hover:bg-gray-50 transition-colors ${opt.value === value ? 'bg-purple-50' : ''}`}
+              >
+                <div className="flex items-center justify-between">
+                  <span className="text-sm text-gray-700">{opt.label}</span>
+                  {opt.aiReasoning && (
+                    <span className="flex items-center gap-1">
+                      <Sparkles className="w-3 h-3 text-purple-400" />
+                    </span>
+                  )}
+                </div>
+                {opt.aiReasoning && (
+                  <p className="text-xs text-gray-400 mt-0.5">{opt.aiReasoning}</p>
+                )}
+              </button>
+            ))}
+          </div>
+        )}
+      </div>
+    </div>
   );
 }
 
@@ -69,94 +81,73 @@ export function AutoDisposition({ mode, isActive, onSave }: AutoDispositionProps
   const maxNotes = 1000;
 
   const statusLabel = isActive ? (
-    <Typography variant="caption" color="text.secondary" fontWeight={600}>
-      Drafting…
-    </Typography>
+    <span className="flex items-center gap-1.5 text-xs text-purple-600 font-medium">
+      <span className="w-1.5 h-1.5 rounded-full bg-purple-500 animate-pulse" />
+      AI is drafting...
+    </span>
   ) : (
-    <Typography variant="caption" color="success.main" fontWeight={600}>
-      Ready
-    </Typography>
+    <span className="text-xs text-green-600 font-medium">Ready to review</span>
   );
 
   return (
     <CollapsibleSection
-      title={
-        <Stack direction="row" spacing={1} alignItems="center">
-          <ClipboardText size={16} aria-hidden />
-          <Typography component="span" variant="subtitle2">
-            Disposition
-          </Typography>
-        </Stack>
-      }
+      title={<span className="flex items-center gap-1.5"><ClipboardList className="w-3.5 h-3.5 text-gray-500" /><span>Disposition</span></span>}
       headerRight={statusLabel}
-      detailsSx={{ px: 2, pb: 2, pt: 1 }}
+      bodyClassName="px-3 pb-3 pt-2 space-y-3"
     >
-      <Stack spacing={2}>
-        <ReasonSelect
-          label="Disposition"
-          value={disposition}
-          options={data.dispositionOptions}
-          onChange={setDisposition}
-          confidenceText="Medium"
-        />
+      <AIReasoningDropdown
+        label="Disposition"
+        value={disposition}
+        options={data.dispositionOptions}
+        onChange={setDisposition}
+        confidenceText="Med confidence"
+      />
 
-        <ReasonSelect
-          label="Sub-disposition"
-          value={subDisposition}
-          options={data.subDispositionOptions}
-          onChange={setSubDisposition}
-          confidenceText="High"
-        />
+      <AIReasoningDropdown
+        label="Sub-disposition"
+        value={subDisposition}
+        options={data.subDispositionOptions}
+        onChange={setSubDisposition}
+        confidenceText="High confidence"
+      />
 
-        <TextField
-          fullWidth
-          multiline
-          minRows={4}
-          label="Notes"
+      <div className="space-y-1">
+        <div className="flex items-center justify-between">
+          <label className="text-xs font-medium text-gray-600">Call Notes</label>
+          <div className="flex items-center gap-1 text-xs text-purple-600">
+            <Sparkles className="w-3 h-3" />
+            <span>AI-drafted — review before saving</span>
+          </div>
+        </div>
+        <textarea
           value={notes}
           onChange={e => setNotes(e.target.value.slice(0, maxNotes))}
-          placeholder="Summary notes…"
-          variant="outlined"
-          size="small"
-          helperText={
-            <Box component="span" sx={{ display: 'flex', justifyContent: 'space-between', width: '100%' }}>
-              <Typography component="span" variant="caption" color="text.secondary">
-                Review before save
-              </Typography>
-              <Typography component="span" variant="caption" color="text.secondary" sx={{ fontVariantNumeric: 'tabular-nums' }}>
-                {notes.length}/{maxNotes}
-              </Typography>
-            </Box>
-          }
-          FormHelperTextProps={{ component: 'div' }}
+          rows={4}
+          className="w-full px-3 py-2 text-xs text-gray-700 border border-purple-200 rounded-lg bg-purple-50/30 focus:outline-none focus:ring-1 focus:ring-purple-300 resize-none leading-relaxed"
+          placeholder="Add call summary..."
         />
+        <p className="text-[10px] text-gray-400 text-right">{notes.length}/{maxNotes}</p>
+      </div>
 
-        <Stack spacing={1} sx={{ pt: 1 }}>
-          {mode === 'voice' ? (
-            <>
-              <Button variant="contained" fullWidth onClick={onSave}>
-                <Stack direction="row" spacing={0.5} alignItems="center" justifyContent="center" component="span">
-                  <CheckSquare size={16} aria-hidden />
-                  Save disposition
-                </Stack>
-              </Button>
-              <Button variant="outlined" fullWidth onClick={onSave}>
-                <Stack direction="row" spacing={0.5} alignItems="center" justifyContent="center" component="span">
-                  <ArrowsLeftRight size={16} aria-hidden />
-                  Dispose and dial next
-                </Stack>
-              </Button>
-            </>
-          ) : (
-            <Button variant="contained" fullWidth onClick={onSave}>
-              <Stack direction="row" spacing={0.5} alignItems="center" justifyContent="center" component="span">
-                <CheckSquare size={16} aria-hidden />
-                Resolve and tag
-              </Stack>
+      <div className="flex gap-2 pt-1">
+        {mode === 'voice' ? (
+          <>
+            <Button variant="primary" size="md" className="flex-1 justify-center" onClick={onSave}>
+              <CheckSquare className="w-4 h-4" />
+              Save & Dispose
             </Button>
-          )}
-        </Stack>
-      </Stack>
+            <Button variant="secondary" size="md" onClick={onSave}>
+              <PhoneForwarded className="w-4 h-4" />
+              Dispose & Dial
+            </Button>
+          </>
+        ) : (
+          <Button variant="primary" size="md" className="flex-1 justify-center" onClick={onSave}>
+            <CheckSquare className="w-4 h-4" />
+            Resolve & Tag
+          </Button>
+        )}
+      </div>
     </CollapsibleSection>
   );
 }
