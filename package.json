@@ -12,9 +12,8 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
-    "@exotel-npm-dev/signal-design-system": "^1.0.13",
-    "@phosphor-icons/react": "^2.1.10",
     "@tailwindcss/vite": "^4.2.4",
+    "lucide-react": "^1.11.0",
     "react": "^19.2.5",
     "react-dom": "^19.2.5",
     "tailwindcss": "^4.2.4"

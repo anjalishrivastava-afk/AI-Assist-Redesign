@@ -1,23 +1,13 @@
-import React from 'react';
-import { CaretDown } from '@phosphor-icons/react';
-import {
-  Accordion,
-  AccordionDetails,
-  AccordionSummary,
-  Box,
-  Stack,
-} from '@exotel-npm-dev/signal-design-system';
-import type { SxProps, Theme } from '@mui/material/styles';
+import React, { useState } from 'react';
+import { ChevronDown, ChevronRight } from 'lucide-react';
 
 interface CollapsibleSectionProps {
   title: React.ReactNode;
   children: React.ReactNode;
   defaultOpen?: boolean;
   headerRight?: React.ReactNode;
-  /** Applied to Accordion root (MUI `sx`). */
-  sx?: SxProps<Theme>;
-  /** Applied to AccordionDetails content wrapper. */
-  detailsSx?: SxProps<Theme>;
+  className?: string;
+  bodyClassName?: string;
   sticky?: boolean;
 }
 
@@ -26,52 +16,33 @@ export function CollapsibleSection({
   children,
   defaultOpen = true,
   headerRight,
-  sx,
-  detailsSx,
+  className = '',
+  bodyClassName = '',
   sticky = false,
 }: CollapsibleSectionProps) {
+  const [open, setOpen] = useState(defaultOpen);
+
   return (
-    <Accordion
-      defaultExpanded={defaultOpen}
-      disableGutters
-      elevation={0}
-      sx={{
-        borderBottom: 1,
-        borderColor: 'divider',
-        '&:before': { display: 'none' },
-        ...sx,
-      }}
-    >
-      <AccordionSummary
-        expandIcon={<CaretDown size={18} aria-hidden />}
-        sx={{
-          px: 2,
-          minHeight: 48,
-          '& .MuiAccordionSummary-content': { alignItems: 'center', my: 1 },
-          ...(sticky
-            ? {
-                position: 'sticky',
-                top: 0,
-                zIndex: 2,
-                bgcolor: 'background.paper',
-                borderBottom: 1,
-                borderColor: 'divider',
-              }
-            : {}),
-        }}
+    <div className={`border-b border-gray-100 last:border-b-0 ${className}`}>
+      <div
+        className={`flex items-center justify-between px-4 py-2.5 cursor-pointer select-none hover:bg-gray-50 transition-colors ${sticky ? 'sticky top-0 bg-white z-10 border-b border-gray-100' : 'bg-white'}`}
+        onClick={() => setOpen(o => !o)}
       >
-        <Stack direction="row" alignItems="center" justifyContent="space-between" spacing={1} sx={{ width: '100%', pr: 0.5 }}>
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, minWidth: 0, typography: 'subtitle2', fontWeight: 600 }}>
-            {title}
-          </Box>
-          {headerRight ? (
-            <Box onClick={(e: React.MouseEvent) => e.stopPropagation()} sx={{ flexShrink: 0 }}>
-              {headerRight}
-            </Box>
-          ) : null}
-        </Stack>
-      </AccordionSummary>
-      <AccordionDetails sx={{ pt: 0, px: 0, pb: 0, ...detailsSx }}>{children}</AccordionDetails>
-    </Accordion>
+        <div className="flex items-center gap-2 text-sm font-semibold text-gray-700">
+          {open ? <ChevronDown className="w-3.5 h-3.5 text-gray-400" /> : <ChevronRight className="w-3.5 h-3.5 text-gray-400" />}
+          {title}
+        </div>
+        {headerRight && (
+          <div onClick={e => e.stopPropagation()}>
+            {headerRight}
+          </div>
+        )}
+      </div>
+      {open && (
+        <div className={bodyClassName}>
+          {children}
+        </div>
+      )}
+    </div>
   );
 }

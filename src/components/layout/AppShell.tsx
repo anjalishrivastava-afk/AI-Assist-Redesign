@@ -1,5 +1,5 @@
 import React, { useState, useCallback } from 'react';
-import { Alert, Box, ExotelThemeProvider, Snackbar } from '@exotel-npm-dev/signal-design-system';
+import { Sparkles, RotateCcw } from 'lucide-react';
 import { InboxSidebar } from './InboxSidebar';
 import { ModeToggle } from './ModeToggle';
 import { VoiceInteraction } from '../interaction/VoiceInteraction';
@@ -8,6 +8,25 @@ import { AIAssistContainer } from '../aiAssist/AIAssistContainer';
 import { useMode } from '../../hooks/useMode';
 import { useCallTimer } from '../../hooks/useCallTimer';
 import { useInteractionState } from '../../hooks/useInteractionState';
+
+interface ToastProps {
+  message: string;
+  onDone: () => void;
+}
+
+function Toast({ message, onDone }: ToastProps) {
+  React.useEffect(() => {
+    const t = setTimeout(onDone, 3000);
+    return () => clearTimeout(t);
+  }, [onDone]);
+
+  return (
+    <div className="fixed bottom-6 right-6 z-50 bg-gray-900 text-white text-sm px-4 py-2.5 rounded-xl shadow-xl flex items-center gap-2 animate-slideUp">
+      <span className="text-green-400">✓</span>
+      {message}
+    </div>
+  );
+}
 
 export function AppShell() {
   const { mode, setMode } = useMode('voice');
@@ -35,189 +54,80 @@ export function AppShell() {
   }, [setMode, resumeInteraction]);
 
   return (
-    <ExotelThemeProvider defaultMode="light">
-      <Box sx={{ height: '100vh', width: '100vw', display: 'flex', flexDirection: 'column', overflow: 'hidden', bgcolor: 'grey.100', color: 'text.primary' }}>
-        <Box
-          component="header"
-          sx={{
-            height: 56,
-            flexShrink: 0,
-            px: 2,
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            borderBottom: 1,
-            borderColor: 'divider',
-            bgcolor: 'background.paper',
-          }}
-        >
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, minWidth: 0 }}>
-            <Box component="span" sx={{ fontWeight: 600, fontSize: '0.875rem', typography: 'body2' }}>
-              Exotel Assist
-            </Box>
-            <Box
-              component="span"
-              sx={{
-                display: { xs: 'none', sm: 'inline' },
-                fontSize: '0.75rem',
-                color: 'text.secondary',
-                borderLeft: 1,
-                borderColor: 'divider',
-                pl: 2,
-              }}
-            >
-              Agent workspace
-            </Box>
-          </Box>
-          <ModeToggle mode={mode} onChange={handleModeChange} />
-        </Box>
+    <div className="h-screen w-screen flex flex-col bg-gray-100 overflow-hidden" style={{ fontFamily: 'Inter, sans-serif' }}>
+      {/* Top bar */}
+      <header className="h-12 bg-white border-b border-gray-200 flex items-center justify-between px-5 shrink-0 shadow-sm">
+        <div className="flex items-center gap-2">
+          <div className="w-7 h-7 rounded-lg bg-purple-600 flex items-center justify-center">
+            <Sparkles className="w-4 h-4 text-white" />
+          </div>
+          <span className="text-sm font-bold text-gray-900 tracking-tight">ExoAssist</span>
+          <span className="text-xs text-gray-400 ml-2">Unified Support Widget</span>
+        </div>
+        <ModeToggle mode={mode} onChange={handleModeChange} />
+      </header>
 
-        <Box
-          sx={{
-            flex: 1,
-            minHeight: 0,
-            display: 'grid',
-            gridTemplateColumns: { xs: '200px minmax(0, 1fr) min(360px, 32vw)', lg: '220px minmax(0, 1fr) 400px' },
-            gap: 2,
-            p: 2,
-          }}
-        >
-          <Box component="aside" sx={{ minWidth: 0, minHeight: 0, display: 'flex', flexDirection: 'column' }}>
-            <Box
-              sx={{
-                flex: 1,
-                minHeight: 0,
-                borderRadius: 1,
-                border: 1,
-                borderColor: 'divider',
-                bgcolor: 'grey.50',
-                display: 'flex',
-                flexDirection: 'column',
-                overflow: 'hidden',
-              }}
-            >
-              <InboxSidebar />
-            </Box>
-          </Box>
+      {/* Main 3-column layout */}
+      <div className="flex-1 flex min-h-0">
+        {/* Left rail */}
+        <div className="w-60 shrink-0">
+          <InboxSidebar />
+        </div>
 
-          <Box component="main" sx={{ minWidth: 0, minHeight: 0, display: 'flex', flexDirection: 'column' }}>
-            <Box
-              sx={{
-                flex: 1,
-                minHeight: 0,
-                borderRadius: 1,
-                border: 1,
-                borderColor: 'divider',
-                bgcolor: 'background.paper',
-                boxShadow: 1,
-                display: 'flex',
-                flexDirection: 'column',
-                overflow: 'hidden',
-              }}
-            >
-              <Box
-                sx={{
-                  px: 2,
-                  py: 1.5,
-                  borderBottom: 1,
-                  borderColor: 'divider',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'space-between',
-                  gap: 2,
-                  flexShrink: 0,
-                }}
-              >
-                <Box sx={{ minWidth: 0 }}>
-                  <Box component="h1" sx={{ m: 0, fontSize: '0.875rem', fontWeight: 600, typography: 'subtitle2' }}>
-                    {mode === 'voice' ? 'Rajesh Kumar — Live call' : 'Ananya Sharma — WhatsApp'}
-                  </Box>
-                  <Box sx={{ fontSize: '0.75rem', color: 'text.secondary', mt: 0.5 }}>
-                    {mode === 'voice' ? 'Cards & Payments queue' : 'Refund inquiry · Order #ORD-29341'}
-                  </Box>
-                </Box>
-                {mode === 'voice' && interactionState === 'active' && (
-                  <Box
-                    component="span"
-                    sx={{
-                      display: 'inline-flex',
-                      alignItems: 'center',
-                      gap: 1,
-                      fontSize: '0.75rem',
-                      fontWeight: 500,
-                      color: 'text.secondary',
-                      px: 1,
-                      py: 0.5,
-                      borderRadius: 1,
-                      border: 1,
-                      borderColor: 'divider',
-                      bgcolor: 'grey.50',
-                      fontVariantNumeric: 'tabular-nums',
-                    }}
-                  >
-                    <Box component="span" sx={{ width: 8, height: 8, borderRadius: '50%', bgcolor: 'error.main' }} />
-                    {callDuration}
-                  </Box>
-                )}
-              </Box>
+        {/* Center column */}
+        <div className="flex-1 flex flex-col min-w-0 border-x border-gray-200 bg-white">
+          <div className="px-5 py-3 border-b border-gray-200 bg-white flex items-center justify-between shrink-0">
+            <div>
+              <h2 className="text-sm font-semibold text-gray-800">
+                {mode === 'voice' ? 'Rajesh Kumar — Live Call' : 'Ananya Sharma — WhatsApp'}
+              </h2>
+              <p className="text-xs text-gray-500 mt-0.5">
+                {mode === 'voice' ? 'Cards & Payments queue' : 'Refund inquiry · Order #ORD-29341'}
+              </p>
+            </div>
+            <div className="flex items-center gap-2">
+              {interactionState === 'ended' && (
+                <button
+                  onClick={resumeInteraction}
+                  className="flex items-center gap-1.5 text-xs text-gray-500 hover:text-gray-700 font-medium border border-gray-200 px-2.5 py-1 rounded-lg hover:bg-gray-50 transition-colors"
+                  title="Demo only — resumes conversation for re-testing"
+                >
+                  <RotateCcw className="w-3 h-3" />
+                  Resume <span className="text-gray-400">(Demo only)</span>
+                </button>
+              )}
+              {mode === 'voice' && interactionState === 'active' && (
+                <span className="flex items-center gap-1.5 text-xs font-semibold text-red-600 bg-red-50 px-2.5 py-1 rounded-full border border-red-200">
+                  <span className="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse" />
+                  {callDuration}
+                </span>
+              )}
+            </div>
+          </div>
 
-              <Box sx={{ flex: 1, minHeight: 0, display: 'flex', flexDirection: 'column', bgcolor: 'grey.50' }}>
-                {mode === 'voice' ? (
-                  <VoiceInteraction
-                    callDuration={callDuration}
-                    onEndCall={endInteraction}
-                    interactionState={interactionState}
-                    onStartInteraction={resumeInteraction}
-                  />
-                ) : (
-                  <ChatInteraction
-                    insertText={insertText}
-                    onClearInsert={() => setInsertText(undefined)}
-                    onResolve={endInteraction}
-                    interactionState={interactionState}
-                    onStartInteraction={resumeInteraction}
-                  />
-                )}
-              </Box>
-            </Box>
-          </Box>
-
-          <Box component="aside" sx={{ minWidth: 0, minHeight: 0, display: 'flex', flexDirection: 'column' }}>
-            <Box
-              sx={{
-                flex: 1,
-                minHeight: 0,
-                borderRadius: 1,
-                border: 1,
-                borderColor: 'divider',
-                bgcolor: 'background.paper',
-                display: 'flex',
-                flexDirection: 'column',
-                overflow: 'hidden',
-              }}
-            >
-              <AIAssistContainer
-                mode={mode}
-                callDuration={callDuration}
-                interactionState={interactionState}
-                onInsert={handleInsert}
-                onSaveDisposition={handleSave}
+          {mode === 'voice'
+            ? <VoiceInteraction callDuration={callDuration} onEndCall={endInteraction} />
+            : <ChatInteraction
+                insertText={insertText}
+                onClearInsert={() => setInsertText(undefined)}
+                onResolve={endInteraction}
               />
-            </Box>
-          </Box>
-        </Box>
+          }
+        </div>
 
-        <Snackbar
-          open={!!toast}
-          autoHideDuration={3000}
-          onClose={() => setToast(null)}
-          anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
-        >
-          <Alert onClose={() => setToast(null)} severity="success" variant="filled" sx={{ width: '100%' }}>
-            {toast}
-          </Alert>
-        </Snackbar>
-      </Box>
-    </ExotelThemeProvider>
+        {/* Right rail — AI Assist */}
+        <div className="w-[420px] shrink-0">
+          <AIAssistContainer
+            mode={mode}
+            callDuration={callDuration}
+            interactionState={interactionState}
+            onInsert={handleInsert}
+            onSaveDisposition={handleSave}
+          />
+        </div>
+      </div>
+
+      {toast && <Toast message={toast} onDone={() => setToast(null)} />}
+    </div>
   );
 }

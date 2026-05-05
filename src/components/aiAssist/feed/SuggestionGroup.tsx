@@ -1,12 +1,5 @@
 import React, { useState } from 'react';
-import { CaretDown, CaretUp } from '@phosphor-icons/react';
-import {
-  Box,
-  Button,
-  Card,
-  Stack,
-  Typography,
-} from '@exotel-npm-dev/signal-design-system';
+import { ChevronDown, ChevronUp } from 'lucide-react';
 import { SuggestionCard } from '../SuggestionCard';
 import { suggestionsById } from '../../../mocks/suggestions';
 import type { Mode } from '../../../hooks/useMode';
@@ -26,37 +19,35 @@ export function SuggestionGroup({ suggestionIds, mode, onInsert }: SuggestionGro
   if (!validSuggestions.length) return null;
 
   return (
-    <Box sx={{ ml: 2, pl: 2, borderLeft: 2, borderColor: 'divider' }}>
-      <Card variant="outlined" sx={{ overflow: 'hidden' }}>
-        <Button
-          fullWidth
+    <div className="flex gap-0 ml-4 mb-1 animate-fadeIn">
+      {/* Vertical connecting line */}
+      <div className="flex flex-col items-center w-5 shrink-0 pt-1">
+        <div className="w-px flex-1 bg-purple-200" style={{ minHeight: '16px' }} />
+      </div>
+
+      {/* Content */}
+      <div className="flex-1 min-w-0 pr-4 pb-2">
+        <button
           onClick={() => setCollapsed(c => !c)}
-          color="inherit"
-          sx={{
-            justifyContent: 'space-between',
-            px: 2,
-            py: 1.5,
-            borderRadius: 0,
-            textTransform: 'none',
-            fontWeight: 600,
-            fontSize: '0.75rem',
-            color: 'text.secondary',
-          }}
+          className="flex items-center gap-1.5 mb-2 group"
         >
-          <Typography variant="caption" fontWeight={600} color="text.secondary">
-            Suggested replies ({validSuggestions.length})
-          </Typography>
-          {collapsed ? <CaretDown size={16} /> : <CaretUp size={16} />}
-        </Button>
+          <span className="text-[10px] font-semibold text-purple-600">
+            💡 {validSuggestions.length} suggested {validSuggestions.length === 1 ? 'reply' : 'replies'} for this message
+          </span>
+          {collapsed
+            ? <ChevronDown className="w-3 h-3 text-purple-400 group-hover:text-purple-600" />
+            : <ChevronUp className="w-3 h-3 text-purple-400 group-hover:text-purple-600" />
+          }
+        </button>
 
         {!collapsed && (
-          <Stack spacing={1.5} sx={{ px: 2, pb: 2, borderTop: 1, borderColor: 'divider' }}>
+          <div className="space-y-2">
             {validSuggestions.map(s => (
               <SuggestionCard key={s.id} suggestion={s} mode={mode} onInsert={onInsert} />
             ))}
-          </Stack>
+          </div>
         )}
-      </Card>
-    </Box>
+      </div>
+    </div>
   );
 }

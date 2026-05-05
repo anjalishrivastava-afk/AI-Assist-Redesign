@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { Box } from '@exotel-npm-dev/signal-design-system';
 import { AssistHeader } from './AssistHeader';
-import { AssistTabbedPanel } from './AssistTabbedPanel';
+import { LiveWorkspace } from './LiveWorkspace';
 import { WrapUpView } from './WrapUpView';
 import { voiceSentiment, chatSentiment } from '../../mocks/sentiment';
 import { useStreamingTranscript } from '../../hooks/useStreamingTranscript';
@@ -24,6 +23,7 @@ export function AIAssistContainer({
   onInsert,
   onSaveDisposition,
 }: AIAssistContainerProps) {
+  // Fade transition state
   const [displayedState, setDisplayedState] = useState<InteractionState>(interactionState);
   const [opacity, setOpacity] = useState(1);
 
@@ -33,7 +33,7 @@ export function AIAssistContainer({
     const t = setTimeout(() => {
       setDisplayedState(interactionState);
       setOpacity(1);
-    }, 150);
+    }, 200);
     return () => clearTimeout(t);
   }, [interactionState, displayedState]);
 
@@ -41,30 +41,23 @@ export function AIAssistContainer({
   const sentiment = mode === 'voice' ? voiceSentiment : chatSentiment;
 
   return (
-    <Box sx={{ height: '100%', display: 'flex', flexDirection: 'column', minHeight: 0, bgcolor: 'background.paper' }}>
+    <div className="h-full flex flex-col bg-white border-l border-gray-200 overflow-hidden">
       <AssistHeader
         mode={mode}
         callDuration={callDuration}
         sentiment={sentiment}
         interactionState={interactionState}
       />
-      <Box
-        sx={{
-          flex: 1,
-          display: 'flex',
-          flexDirection: 'column',
-          minHeight: 0,
-          opacity,
-          transition: 'opacity 150ms ease',
-        }}
+      <div
+        className="flex-1 flex flex-col min-h-0 transition-opacity"
+        style={{ opacity, transitionDuration: '200ms' }}
       >
         {displayedState === 'active' ? (
-          <AssistTabbedPanel
+          <LiveWorkspace
             mode={mode}
             voiceTurns={visibleTurns}
             latestVoiceId={latestId}
             onInsert={onInsert}
-            onSaveDisposition={onSaveDisposition}
           />
         ) : (
           <WrapUpView
@@ -73,7 +66,7 @@ export function AIAssistContainer({
             onSaveDisposition={onSaveDisposition}
           />
         )}
-      </Box>
-    </Box>
+      </div>
+    </div>
   );
 }

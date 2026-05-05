@@ -1,34 +1,31 @@
 import React from 'react';
-import { Card, CardContent, Skeleton as MuiSkeleton, Stack } from '@exotel-npm-dev/signal-design-system';
 
 interface SkeletonProps {
-  width?: number | string;
-  height?: number | string;
-  variant?: 'text' | 'rectangular' | 'rounded';
+  className?: string;
 }
 
-export function Skeleton({ width = '100%', height = 16, variant = 'rounded' }: SkeletonProps) {
-  return <MuiSkeleton variant={variant} width={width} height={height} animation="wave" />;
+export function Skeleton({ className = '' }: SkeletonProps) {
+  return (
+    <div className={`animate-pulse bg-gradient-to-r from-gray-100 via-gray-200 to-gray-100 bg-[length:200%_100%] rounded ${className}`}
+      style={{ animation: 'shimmer 1.5s infinite' }}
+    />
+  );
 }
 
 export function SuggestionSkeleton() {
   return (
-    <Card variant="outlined">
-      <CardContent>
-        <Stack spacing={1.5}>
-          <Stack direction="row" spacing={1}>
-            <Skeleton width={80} height={20} />
-            <Skeleton width={112} height={20} />
-          </Stack>
-          <Skeleton height={16} />
-          <Skeleton height={16} width="83%" />
-          <Stack direction="row" spacing={1} sx={{ pt: 0.5 }}>
-            <Skeleton width={80} height={32} />
-            <Skeleton width={96} height={32} />
-            <Skeleton width={64} height={32} />
-          </Stack>
-        </Stack>
-      </CardContent>
-    </Card>
+    <div className="border border-gray-200 rounded-lg p-3 space-y-2">
+      <div className="flex gap-2">
+        <Skeleton className="h-5 w-16 rounded-full" />
+        <Skeleton className="h-5 w-24 rounded-full" />
+      </div>
+      <Skeleton className="h-4 w-full" />
+      <Skeleton className="h-4 w-5/6" />
+      <div className="flex gap-2 pt-1">
+        <Skeleton className="h-6 w-16 rounded" />
+        <Skeleton className="h-6 w-20 rounded" />
+        <Skeleton className="h-6 w-16 rounded" />
+      </div>
+    </div>
   );
 }
